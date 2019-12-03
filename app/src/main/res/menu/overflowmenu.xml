@@ -6,4 +6,3 @@
         android:id="@+id/aboutFragment"
         android:title="@string/about" />
 </menu>
-
