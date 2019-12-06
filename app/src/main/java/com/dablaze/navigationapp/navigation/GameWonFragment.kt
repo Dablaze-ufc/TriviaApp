@@ -19,6 +19,7 @@ package com.dablaze.navigationapp.navigation
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -45,18 +46,18 @@ class GameWonFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.winner_menu, menu)
+        inflater.inflate(R.menu.winner_menu, menu)
+        if (null == shareIntent().resolveActivity(activity!!.packageManager)) {
+            menu.findItem(R.id.share).isVisible = false
+        }
     }
 
     private fun shareIntent(): Intent {
-        var args = GameWonFragmentArgs.fromBundle(arguments)
-        val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.type = "text/plain"
-        shareIntent.putExtra(
-            Intent.EXTRA_TEXT,
-            getString(R.string.share_success_text, args.numCorrect, args.numQuestion)
-        )
-        return shareIntent
+        val args = GameWonFragmentArgs.fromBundle(arguments)
+        return ShareCompat.IntentBuilder.from(activity)
+            .setText(getString(R.string.share_success_text, args.numQuestion, args.numCorrect))
+            .setType("text/plain")
+            .intent
     }
 
     private fun shareSuccess() {
@@ -64,7 +65,7 @@ class GameWonFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item!!.itemId) {
+        when (item.itemId) {
             R.id.share -> shareSuccess()
         }
         return super.onOptionsItemSelected(item)
