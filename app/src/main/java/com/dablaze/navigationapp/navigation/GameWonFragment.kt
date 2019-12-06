@@ -16,10 +16,9 @@
 
 package com.dablaze.navigationapp.navigation
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -40,6 +39,35 @@ class GameWonFragment : Fragment() {
             view.findNavController()
                 .navigate(GameWonFragmentDirections.actionGameWonFragmentToGameFragment())
         }
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.winner_menu, menu)
+    }
+
+    private fun shareIntent(): Intent {
+        var args = GameWonFragmentArgs.fromBundle(arguments)
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(
+            Intent.EXTRA_TEXT,
+            getString(R.string.share_success_text, args.numCorrect, args.numQuestion)
+        )
+        return shareIntent
+    }
+
+    private fun shareSuccess() {
+        startActivity(shareIntent())
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item!!.itemId) {
+            R.id.share -> shareSuccess()
+        }
+        return super.onOptionsItemSelected(item)
+
     }
 }

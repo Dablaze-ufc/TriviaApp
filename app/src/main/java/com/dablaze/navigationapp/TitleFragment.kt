@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.dablaze.navigationapp.databinding.FragmentTitleBinding
 
@@ -21,9 +22,11 @@ class TitleFragment : Fragment() {
     ): View? {
         val binding: FragmentTitleBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_title, container, false)
-        binding.playButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(TitleFragmentDirections.actionTitleFragmentToGameFragment())
-        )
+        binding.playButton.setOnClickListener { v: View ->
+            v.findNavController()
+                .navigate(TitleFragmentDirections.actionTitleFragmentToGameFragment())
+
+        }
         setHasOptionsMenu(true)
         return binding.root
     }
